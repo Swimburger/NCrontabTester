@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>NCrontabTester</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+</head>
+
+<body>
+    <app>Loading...</app>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <input style="height:1px; width: 1px; padding: 0; border: 0; position: absolute; color: rgba(255, 255, 255, 0); background: rgba(255, 255, 255, 0);" id="copy-input" />
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        function copyText(textToCopy) {
+            var copyTextInput = document.getElementById("copy-input");
+            copyTextInput.value = textToCopy;
+            if (copyTextInput.select) copyTextInput.select();
+            if (copyTextInput.setSelectionRange) copyTextInput.setSelectionRange(0, 99999)
+            document.execCommand("copy");
+            alert("Text Copied: " + textToCopy);
+        }
+    </script>
+</body>
+
+</html>
