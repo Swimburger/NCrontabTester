@@ -1,34 +1,73 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>NCrontabTester</title>
     <base href="/" />
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/app.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <style>
+        * {
+            scroll-behavior: smooth;
+        }
+
+        .occurrences-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        #blazor-error-ui {
+            bottom: 20px;
+            position: fixed;
+            z-index: 1000;
+            padding-right: 2rem;
+            right: 20px;
+            margin: 0;
+            display: none;
+        }
+
+        #blazor-error-ui .dismiss {
+            cursor: pointer;
+            position: absolute;
+            right: 0.75rem;
+            top: 0.7rem;
+        }
+    </style>
 </head>
 
 <body>
-    <app>Loading...</app>
+    <div class="container">
+        <app>Loading...</app>
+    </div>
 
-    <div id="blazor-error-ui">
+    <div id="blazor-error-ui" class="alert alert-danger" role="alert">
+        >
         An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
+        <a class="alert-link" href="" class="reload">Reload</a>
+        <button type="button" class="close dismiss" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
     <input style="height:1px; width: 1px; padding: 0; border: 0; position: absolute; color: rgba(255, 255, 255, 0); background: rgba(255, 255, 255, 0);" id="copy-input" />
     <script src="_framework/blazor.webassembly.js"></script>
     <script>
-        function copyText(textToCopy) {
-            var copyTextInput = document.getElementById("copy-input");
-            copyTextInput.value = textToCopy;
-            if (copyTextInput.select) copyTextInput.select();
-            if (copyTextInput.setSelectionRange) copyTextInput.setSelectionRange(0, 99999)
-            document.execCommand("copy");
-            alert("Text Copied: " + textToCopy);
-        }
+        (function () {
+            window.copyText = function (textToCopy) {
+                var copyTextInput = document.getElementById("copy-input");
+                copyTextInput.value = textToCopy;
+                if (copyTextInput.select) copyTextInput.select();
+                if (copyTextInput.setSelectionRange) copyTextInput.setSelectionRange(0, 99999)
+                document.execCommand("copy");
+                alert("Text Copied: " + textToCopy);
+            }
+
+            window.scrollToOccurrence = function (occurrenceIndex) {
+                var element = document.querySelector('.occurrences-list > *:nth-child(' + (occurrenceIndex + 1) + ')');
+                var scrollContainer = element.parentElement;
+                scrollContainer.scrollTo(0, element.offsetTop - scrollContainer.offsetTop);
+            }
+        })();
     </script>
 </body>
 

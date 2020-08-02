@@ -4,13 +4,25 @@
 @inject ILogger<Index> Logger
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
+<div class="form-row">
+    <div class="col-md-6 mb-3">
+        <label for="crontab-expression">NCrontab Expression</label>
+        <div class="input-group mb-3">
+            <input @onkeyup="SetExpression"
+                   @bind="cronExpression"
+                   @bind:event="oninput"
+                   placeholder="Cron Expression"
+                   class="form-control"
+                   id="crontab-expression" />
+            <div class="input-group-append">
+                <button @onclick="PrintOccurrences" type="button" class="btn btn-primary">Print More</button>
+            </div>
+        </div>
+    </div>
+</div>
+<button @onclick="CopyLink" type="button" class="btn btn-light">Copy Link</button>
 
-<input @onkeyup="SetExpression" @bind="cronExpression" @bind:event="oninput" placeholder="Cron Expression" />
-<br />
-<button @onclick="PrintOccurrences">Print More Occurrences</button>
-<button @onclick="CopyLink">Copy Link</button>
-
-<ul>
+<ul class="occurrences-list">
     @foreach (var occurence in occurrences)
     {
         <li>
@@ -27,6 +39,7 @@
     private CrontabSchedule cronSchedule;
     private List<DateTime> occurrences = new List<DateTime>();
     private string errorMessage = string.Empty;
+    private List<Action> actionsToRunAfterRender = new List<Action>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,6 +53,16 @@
         SetExpression();
     }
 
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        foreach (var actionToRun in actionsToRunAfterRender)
+        {
+            actionToRun();
+        }
+        actionsToRunAfterRender.Clear();
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
     private void PrintOccurrences()
     {
         var mostRecentDate = occurrences.Count == 0 ? startDate : occurrences.Last();
@@ -48,6 +71,8 @@
             mostRecentDate = cronSchedule.GetNextOccurrence(mostRecentDate);
             occurrences.Add(mostRecentDate);
         }
+
+        actionsToRunAfterRender.Add(() => JSRuntime.InvokeVoidAsync("scrollToOccurrence", occurrences.Count - 1));
     }
 
     private void SetExpression()
