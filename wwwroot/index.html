@@ -1,20 +1,46 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="h-100">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>NCrontabTester</title>
+    <title>NCrontab Expression Tester Evaluator</title>
+    <meta name="description" content="Use the NCrontab Expression Tester tool to test out your NCrontab/CRON expression and see the DateTimes of your occurrences." />
+    <link rel="icon" type="image/png" href="https://swimburger.net/content/favicon/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" type="image/png" href="https://swimburger.net/content/favicon/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="https://swimburger.net/content/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/png" href="https://swimburger.net/content/favicon/favicon-128.png" sizes="128x128" />
+    <link rel="icon" type="image/png" href="https://swimburger.net/content/favicon/favicon-196x196.png" sizes="196x196" />
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://swimburger.net/content/favicon/apple-touch-icon-57x57.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="https://swimburger.net/content/favicon/apple-touch-icon-60x60.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://swimburger.net/content/favicon/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="https://swimburger.net/content/favicon/apple-touch-icon-76x76.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://swimburger.net/content/favicon/apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="https://swimburger.net/content/favicon/apple-touch-icon-120x120.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://swimburger.net/content/favicon/apple-touch-icon-144x144.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="https://swimburger.net/content/favicon/apple-touch-icon-152x152.png" />
     <base href="/" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-40212618-4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-40212618-4');
+    </script>
     <style>
         * {
             scroll-behavior: smooth;
         }
 
         .occurrences-list {
-            max-height: 500px;
+            height: 500px;
             overflow-y: auto;
+            background: #333;
+            font-family: 'Cascadia Code', monospace;
+            color: #eee;
+            list-style: none;
+            padding-left: 20px;
         }
 
         #blazor-error-ui {
@@ -27,29 +53,87 @@
             display: none;
         }
 
-        #blazor-error-ui .dismiss {
-            cursor: pointer;
+            #blazor-error-ui .dismiss {
+                cursor: pointer;
+                position: absolute;
+                right: 0.75rem;
+                top: 0.7rem;
+            }
+
+        #copy-input {
+            height: 1px;
+            width: 1px;
+            padding: 0;
+            border: 0;
             position: absolute;
-            right: 0.75rem;
-            top: 0.7rem;
+            color: rgba(255, 255, 255, 0);
+            background: rgba(255, 255, 255, 0);
         }
+
+        @media (min-width: 1200px) {
+            .container, .container-lg, .container-md, .container-sm, .container-xl {
+                max-width: 960px;
+            }
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #eee;
+        }
+
+            footer a {
+                text-decoration: underline;
+            }
+
+            footer img {
+                float: left;
+                margin-right: 5px;
+            }
     </style>
 </head>
+<body class="d-flex flex-column h-100">
+    <main role="main" class="flex-shrink-0">
+        <div class="container">
+            <h1 class="display-4">NCrontab Expression Tester</h1>
+            <p>
+                NCrontab is a .NET library providing crontab parsing, crontab formatting and the DateTime calculation of occurrences based on a crontab expression.
+                The library supports a six-part format that allows for seconds. Learn more at <a href="https://github.com/atifaziz/NCrontab">the NCrontab GitHub repository</a>.
+            </p>
+            <p>
+                Use the tool below to test out your NCrontab/CRON expression and see the DateTimes of your occurrences.
+            </p>
+            <div class="alert alert-primary" role="alert">
+                Services such as
+                <a class="alert-link" href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=csharp#ncrontab-expressions">Timer Triggered Azure Functions</a> and
+                <a class="alert-link" href="https://docs.microsoft.com/en-us/azure/app-service/webjobs-create#ncrontab-expressions">scheduled Azure WebJobs</a> use NCrontab and require the six-part format.
+            </div>
+            <p>
 
-<body>
-    <div class="container">
-        <app>Loading...</app>
-    </div>
+            </p>
+            <app>Loading NCrontab Expression Evaluator...</app>
+        </div>
+        <div id="blazor-error-ui" class="alert alert-danger" role="alert">
+            > An unhandled error has occurred.
+            <a class="alert-link reload" href="">Reload</a>
+            <button type="button" class="close dismiss" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <input id="copy-input" />
+    </main>
 
-    <div id="blazor-error-ui" class="alert alert-danger" role="alert">
-        >
-        An unhandled error has occurred.
-        <a class="alert-link" href="" class="reload">Reload</a>
-        <button type="button" class="close dismiss" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <input style="height:1px; width: 1px; padding: 0; border: 0; position: absolute; color: rgba(255, 255, 255, 0); background: rgba(255, 255, 255, 0);" id="copy-input" />
+    <footer class="footer mt-auto py-3">
+        <div class="container">
+            <img src="https://swimburger.net/content/img/burger.svg" width="40" height="22" />
+            Tool built using Blazor WebAssembly by Niels Swimberghe; Follow Niels' blog at
+            <a href="https://swimburger.net">swimburger.net</a> or on <a href="https://twitter.com/RealSwimburger">Twitter</a>;
+            <a href="https://privacypolicies.com/privacy/view/95b2095f4609044d9618c21b06f5df75">Privacy Policy</a>
+        </div>
+    </footer>
+
     <script src="_framework/blazor.webassembly.js"></script>
     <script>
         (function () {
@@ -70,5 +154,4 @@
         })();
     </script>
 </body>
-
 </html>

@@ -4,25 +4,33 @@
 @inject ILogger<Index> Logger
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
-<div class="form-row">
-    <div class="col-md-6 mb-3">
-        <label for="crontab-expression">NCrontab Expression</label>
-        <div class="input-group mb-3">
-            <input @onkeyup="SetExpression"
-                   @bind="cronExpression"
-                   @bind:event="oninput"
-                   placeholder="Cron Expression"
-                   class="form-control"
-                   id="crontab-expression" />
-            <div class="input-group-append">
-                <button @onclick="PrintOccurrences" type="button" class="btn btn-primary">Print More</button>
-            </div>
-        </div>
+<label for="crontab-expression">NCrontab Expression:</label>
+<div class="input-group mb-3">
+    <input @onkeyup="SetExpression"
+           @bind="cronExpression"
+           @bind:event="oninput"
+           placeholder="Cron Expression"
+           class="form-control"
+           id="crontab-expression" />
+    <div class="input-group-append">
+        <button @onclick="PrintOccurrences" type="button" class="btn btn-primary">Print More</button>
+        <button @onclick="CopyLink" type="button" class="btn btn-light">Copy Link</button>
     </div>
 </div>
-<button @onclick="CopyLink" type="button" class="btn btn-light">Copy Link</button>
-
+<label>Occurrences Output:</label>
 <ul class="occurrences-list">
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <li style="color: #e74856;">@errorMessage</li>
+    }
+
+    @if (!isExpression6PartFormat)
+    {
+        <li style="color: #f9f1a5;">
+            You are using the classic five-part CRON format. Services such as
+            Azure Functions and Azure WebJobs require the six-part format.
+        </li>
+    }
     @foreach (var occurence in occurrences)
     {
         <li>
@@ -31,15 +39,14 @@
     }
 </ul>
 
-@errorMessage
-
 @code {
     private DateTime startDate = DateTime.Today;
-    private string cronExpression = "0 12 * */2 Mon";
+    private string cronExpression = "0 0 12 * */2 Mon";
     private CrontabSchedule cronSchedule;
     private List<DateTime> occurrences = new List<DateTime>();
     private string errorMessage = string.Empty;
     private List<Action> actionsToRunAfterRender = new List<Action>();
+    private bool isExpression6PartFormat = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,7 +85,7 @@
     private void SetExpression()
     {
         occurrences.Clear();
-        var hasSecondsInExpression = cronExpression
+        isExpression6PartFormat = cronExpression
             .Trim()
             .Replace(@"\t", " ")
             .Split(' ', StringSplitOptions.RemoveEmptyEntries)
@@ -86,7 +93,7 @@
 
         try
         {
-            cronSchedule = CrontabSchedule.Parse(cronExpression, new CrontabSchedule.ParseOptions { IncludingSeconds = hasSecondsInExpression });
+            cronSchedule = CrontabSchedule.Parse(cronExpression, new CrontabSchedule.ParseOptions { IncludingSeconds = isExpression6PartFormat });
             errorMessage = string.Empty;
             PrintOccurrences();
         }
@@ -94,6 +101,7 @@
         {
             Logger.LogError(exception, exception.Message);
             errorMessage = exception.Message;
+            isExpression6PartFormat = true;
         }
     }
 
@@ -102,7 +110,7 @@
         var uri = new Uri(NavigationManager.Uri);
         var queryPairs = QueryHelpers.ParseQuery(uri.Query);
         queryPairs["expression"] = new Microsoft.Extensions.Primitives.StringValues(cronExpression);
-        var uriToCopy = QueryHelpers.AddQueryString(NavigationManager.Uri, "expression", cronExpression);
+        var uriToCopy = QueryHelpers.AddQueryString(uri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.UriEscaped), "expression", cronExpression);
         JSRuntime.InvokeVoidAsync("copyText", uriToCopy);
     }
 }
