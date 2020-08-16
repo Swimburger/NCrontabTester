@@ -48,7 +48,7 @@
     private List<Action> actionsToRunAfterRender = new List<Action>();
     private bool isExpression6PartFormat = true;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
         var uri = new Uri(NavigationManager.Uri);
         var queryPairs = QueryHelpers.ParseQuery(uri.Query);
@@ -58,6 +58,8 @@
         }
 
         SetExpression();
+
+        return Task.CompletedTask;
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
