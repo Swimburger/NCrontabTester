@@ -13,7 +13,13 @@
            class="form-control"
            id="crontab-expression" />
     <div class="input-group-append">
-        <button @onclick="PrintOccurrences" type="button" class="btn btn-primary">Print More</button>
+        <button 
+            @onclick="PrintOccurrences" 
+            type="button" 
+            class="btn btn-primary" 
+            disabled="@(!isExpressionValid)">
+            Print More
+        </button>
         <button @onclick="CopyLink" type="button" class="btn btn-light">Copy Link</button>
     </div>
 </div>
@@ -48,6 +54,7 @@
     private string errorMessage = string.Empty;
     private List<Action> actionsToRunAfterRender = new List<Action>();
     private bool isExpression6PartFormat = true;
+    private bool isExpressionValid = true;
 
     protected override Task OnInitializedAsync()
     {
@@ -98,6 +105,7 @@
         {
             cronSchedule = CrontabSchedule.Parse(cronExpression, new CrontabSchedule.ParseOptions { IncludingSeconds = isExpression6PartFormat });
             errorMessage = string.Empty;
+            isExpressionValid = true;
             PrintOccurrences();
         }
         catch (CrontabException exception)
@@ -105,6 +113,7 @@
             Logger.LogError(exception, exception.Message);
             errorMessage = exception.Message;
             isExpression6PartFormat = true;
+            isExpressionValid = false;
         }
     }
 
