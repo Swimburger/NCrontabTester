@@ -18,19 +18,20 @@
     </div>
 </div>
 <label>Occurrences Output:</label>
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @errorMessage
+    </div>
+}
+@if (!isExpression6PartFormat)
+{
+    <div class="alert alert-warning" role="alert">
+        You are using the classic five-part CRON format. Services such as
+        Azure Functions and Azure WebJobs require the six-part format.
+    </div>
+}
 <ul class="occurrences-list">
-    @if (!string.IsNullOrEmpty(errorMessage))
-    {
-        <li style="color: #e74856;">@errorMessage</li>
-    }
-
-    @if (!isExpression6PartFormat)
-    {
-        <li style="color: #f9f1a5;">
-            You are using the classic five-part CRON format. Services such as
-            Azure Functions and Azure WebJobs require the six-part format.
-        </li>
-    }
     @foreach (var occurence in occurrences)
     {
         <li>
