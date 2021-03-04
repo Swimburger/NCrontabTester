@@ -62,7 +62,7 @@
         var queryPairs = QueryHelpers.ParseQuery(uri.Query);
         if (queryPairs.ContainsKey("expression"))
         {
-            cronExpression = queryPairs["expression"].First();
+            cronExpression = ReadableQueryToCron(queryPairs["expression"].First());
         }
 
         SetExpression();
@@ -120,9 +120,11 @@
     private void CopyLink()
     {
         var uri = new Uri(NavigationManager.Uri);
-        var queryPairs = QueryHelpers.ParseQuery(uri.Query);
-        queryPairs["expression"] = new Microsoft.Extensions.Primitives.StringValues(cronExpression);
-        var uriToCopy = QueryHelpers.AddQueryString(uri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.UriEscaped), "expression", cronExpression);
+        var readableCron = CronToReadableQuery(cronExpression);
+        var uriToCopy = $"{uri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.UriEscaped)}?expression={readableCron}";
         JSRuntime.InvokeVoidAsync("copyText", uriToCopy);
     }
+
+    private string CronToReadableQuery(string query) => query.Replace(' ', '+');
+    private string ReadableQueryToCron(string query) => query.Replace('+', ' ');
 }
