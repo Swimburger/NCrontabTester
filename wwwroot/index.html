@@ -35,6 +35,12 @@
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://swimburger.net/content/favicon/apple-touch-icon-144x144.png" />
     <link rel="apple-touch-icon-precomposed" sizes="152x152" href="https://swimburger.net/content/favicon/apple-touch-icon-152x152.png" />
     <base href="/" />
+    <link rel="preconnect" href="https://stats.g.doubleclick.net">
+    <link rel="preconnect" href="https://server.ethicalads.io">
+    <link rel="preconnect" href="https://www.google-analytics.com">
+    <link rel="preconnect" href="https://www.google.com">
+    <link rel="preconnect" href="https://media.ethicalads.io">
+    <link rel="preconnect" href="https://swimburger.net">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-40212618-4"></script>
     <script>
@@ -48,8 +54,13 @@
             scroll-behavior: smooth;
         }
 
+        app {
+            display: block;
+            min-height: 520px;
+        }
+
         .occurrences-list {
-            height: 500px;
+            height: 400px;
             overflow-y: auto;
             background: #333;
             font-family: 'Cascadia Code', monospace;
@@ -107,7 +118,23 @@
                 float: left;
                 margin-right: 5px;
             }
-        
+
+        [data-ea-publisher]{
+            min-height: 72px;
+        }
+        [data-ea-publisher].loaded .ea-content, [data-ea-type].loaded .ea-content {
+            margin-left: 0!important;
+            margin-right: 0!important;
+            box-shadow: none!important;
+            background: #eee!important;
+            border-radius: 0!important;
+        }
+
+        [data-ea-type="text"].loaded .ea-callout, .ea-type-text .ea-callout{
+            margin-right: 0!important;
+            padding-right: 0!important;
+        }
+
         .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
     </style>
 </head>
@@ -129,10 +156,9 @@
                 <a class="alert-link" href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=csharp#ncrontab-expressions">Timer Triggered Azure Functions</a> and
                 <a class="alert-link" href="https://docs.microsoft.com/en-us/azure/app-service/webjobs-create#ncrontab-expressions">scheduled Azure WebJobs</a> use NCrontab and require the six-part format.
             </div>
-            <p>
-
-            </p>
             <app>Loading NCrontab Expression Evaluator...</app>
+            <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
+            <div data-ea-publisher="swimburger-net" data-ea-type="text"></div>
         </div>
         <div id="blazor-error-ui" class="alert alert-danger" role="alert">
             > An unhandled error has occurred.
@@ -141,7 +167,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <input id="copy-input" />
+        <input id="copy-input" aria-hidden="true" />
     </main>
 
     <footer class="footer mt-auto py-3">
