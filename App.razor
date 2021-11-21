@@ -47,9 +47,10 @@
 </ul>
 
 @code {
+    private const string DefaultCronExpression = "0 0 12 * */2 Mon";
     private DateTime startDate = DateTime.Today;
-    private string cronExpression = "0 0 12 * */2 Mon";
-    private CrontabSchedule cronSchedule;
+    private string cronExpression = DefaultCronExpression;
+    private CrontabSchedule cronSchedule = CrontabSchedule.Parse(DefaultCronExpression, new CrontabSchedule.ParseOptions { IncludingSeconds = true });
     private List<DateTime> occurrences = new List<DateTime>();
     private string errorMessage = string.Empty;
     private List<Action> actionsToRunAfterRender = new List<Action>();
