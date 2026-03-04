@@ -4,13 +4,12 @@
 @inject ILogger<Index> Logger
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
-<label for="crontab-expression">NCrontab Expression:</label>
+<label class="section-label" for="crontab-expression">NCrontab Expression</label>
 <div class="input-group mb-3">
-    <input @onkeyup="SetExpression"
-           @bind="cronExpression"
-           @bind:event="oninput"
-           placeholder="Cron Expression"
-           class="form-control"
+    <input @oninput="OnInput"
+           value="@cronExpression"
+           placeholder="e.g. 0 0 12 * */2 Mon"
+           class="form-control font-monospace"
            id="crontab-expression" />
     <button
         @onclick="PrintOccurrences"
@@ -19,9 +18,15 @@
         disabled="@(!isExpressionValid)">
         Print More
     </button>
-    <button @onclick="CopyLink" type="button" class="btn @(copied ? "btn-success" : "btn-light")">@(copied ? "Copied!" : "Copy Link")</button>
+    <button @onclick="CopyLink" type="button" class="btn @(copied ? "btn-success" : "btn-outline-brand")">@(copied ? "Copied!" : "Copy Link")</button>
 </div>
-<label>Occurrences Output:</label>
+<div class="d-flex align-items-center mb-2">
+    <span class="section-label mb-0">Occurrences</span>
+    @if (occurrences.Count > 0)
+    {
+        <span class="badge bg-secondary ms-2">@occurrences.Count</span>
+    }
+</div>
 @if (!string.IsNullOrEmpty(errorMessage))
 {
     <div class="alert alert-danger" role="alert">
@@ -38,9 +43,10 @@
 <ul class="occurrences-list">
     @foreach (var occurence in occurrences)
     {
+        var (relClass, relText) = GetRelativeTime(occurence);
         <li>
             <span>@occurence.ToString("yyyy-MM-dd HH:mm:ss")</span>
-            <span class="occurrence-relative">@ToRelativeTime(occurence)</span>
+            <span class="occurrence-relative @relClass">@relText</span>
         </li>
     }
 </ul>
@@ -96,6 +102,12 @@
         }
     }
 
+    private void OnInput(ChangeEventArgs e)
+    {
+        cronExpression = e.Value?.ToString() ?? string.Empty;
+        SetExpression();
+    }
+
     private void SetExpression()
     {
         occurrences.Clear();
@@ -133,11 +145,14 @@
         copied = false;
     }
 
-    private static string ToRelativeTime(DateTime dateTime)
+    private static (string cssClass, string text) GetRelativeTime(DateTime dateTime)
     {
         var diff = dateTime - DateTime.Now;
         var abs = diff.Duration();
         bool future = diff > TimeSpan.Zero;
+
+        string cssClass = diff <= TimeSpan.Zero ? "occurrence-past"
+            : diff.TotalDays <= 7 ? "occurrence-soon" : "occurrence-future";
 
         (int value, string unit) = abs.TotalSeconds < 60  ? ((int)abs.TotalSeconds, "second")
             : abs.TotalMinutes < 60                        ? ((int)abs.TotalMinutes, "minute")
@@ -147,7 +162,7 @@
             :                                                ((int)(abs.TotalDays / 365), "year");
 
         string label = value == 1 ? unit : unit + "s";
-        return future ? $"in {value} {label}" : $"{value} {label} ago";
+        return (cssClass, future ? $"in {value} {label}" : $"{value} {label} ago");
     }
 
     private string CronToReadableQuery(string query) => query.Replace(' ', '+');

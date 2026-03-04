@@ -54,35 +54,147 @@
         gtag('config', 'UA-40212618-4');
     </script>
     <style>
-        * {
-            scroll-behavior: smooth;
+        :root {
+            --brand-darkest: #4a0636;
+            --brand-dark: #6c0a51;
+            --brand-mid: #a02c56;
+            --brand-accent: #ffc966;
+            --brand-gradient: linear-gradient(135deg, var(--brand-darkest) 0%, var(--brand-dark) 50%, var(--brand-mid) 100%);
+        }
+
+        * { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fafafa;
+        }
+
+        /* ── Brand: override Bootstrap primary ──────────────── */
+        .btn-primary {
+            --bs-btn-bg: var(--brand-mid);
+            --bs-btn-border-color: var(--brand-mid);
+            --bs-btn-hover-bg: var(--brand-dark);
+            --bs-btn-hover-border-color: var(--brand-dark);
+            --bs-btn-active-bg: var(--brand-dark);
+            --bs-btn-active-border-color: var(--brand-dark);
+            --bs-btn-disabled-bg: var(--brand-mid);
+            --bs-btn-disabled-border-color: var(--brand-mid);
+        }
+
+        .form-control:focus {
+            border-color: var(--brand-mid);
+            box-shadow: 0 0 0 0.25rem rgba(160, 44, 86, 0.25);
+        }
+
+        /* ── Header ─────────────────────────────────────────── */
+        .app-header {
+            background: var(--brand-gradient);
+            color: #fff;
+            padding: 2.5rem 0 2rem;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .app-header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-header p {
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 640px;
+            margin-bottom: 0.25rem;
+            font-size: 0.9375rem;
+        }
+
+        .app-header a:not(.github-corner) {
+            color: var(--brand-accent);
+        }
+
+        /* ── Main content ───────────────────────────────────── */
+        main {
+            padding: 2rem 0;
+        }
+
+        .tool-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
         }
 
         #app {
             display: block;
-            min-height: 520px;
         }
 
+        /* ── Form ───────────────────────────────────────────── */
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #6b7280;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .badge.bg-secondary {
+            background-color: var(--brand-mid) !important;
+            font-size: 0.65rem;
+        }
+
+        .btn-outline-brand {
+            --bs-btn-color: var(--brand-mid);
+            --bs-btn-border-color: var(--brand-mid);
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: var(--brand-mid);
+            --bs-btn-hover-border-color: var(--brand-mid);
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: var(--brand-dark);
+            --bs-btn-active-border-color: var(--brand-dark);
+        }
+
+        /* ── Terminal output ────────────────────────────────── */
         .occurrences-list {
             height: 400px;
             overflow-y: auto;
-            background: #333;
-            font-family: 'Cascadia Code', monospace;
-            color: #eee;
+            background: #0d1117;
+            font-family: 'Cascadia Code', ui-monospace, 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            font-size: 0.875rem;
+            line-height: 1.65;
+            color: #e6edf3;
             list-style: none;
-            padding-left: 20px;
-            padding-right: 20px;
+            padding: 0.5rem 0;
+            margin: 0;
+            border-radius: 8px;
         }
 
         .occurrences-list li {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            padding: 0.15rem 1rem;
+            transition: background-color 0.1s;
+        }
+
+        .occurrences-list li:hover {
+            background-color: rgba(255, 255, 255, 0.05);
         }
 
         .occurrence-relative {
-            color: #aaa;
+            font-size: 0.8em;
+            min-width: 130px;
+            text-align: right;
         }
 
+        .occurrence-future  { color: #7d8590; }
+        .occurrence-soon    { color: var(--brand-accent); }
+        .occurrence-past    { color: #f85149; }
+
+        /* ── Blazor error UI ────────────────────────────────── */
         #blazor-error-ui {
             bottom: 20px;
             position: fixed;
@@ -93,74 +205,79 @@
             display: none;
         }
 
-            #blazor-error-ui .dismiss {
-                cursor: pointer;
-                position: absolute;
-                right: 0.75rem;
-                top: 0.7rem;
-            }
-
-        @media (min-width: 1200px) {
-            .container, .container-lg, .container-md, .container-sm, .container-xl {
-                max-width: 960px;
-            }
+        #blazor-error-ui .dismiss {
+            cursor: pointer;
+            position: absolute;
+            right: 0.75rem;
+            top: 0.7rem;
         }
 
-        label {
-            font-weight: bold;
-        }
-
-        footer {
-            background-color: #eee;
-        }
-
-            footer a {
-                text-decoration: underline;
-            }
-
-            footer img {
-                float: left;
-                margin-right: 5px;
-            }
-
-        [data-ea-publisher]{
-            min-height: 72px;
-        }
+        /* ── Ethical Ads ────────────────────────────────────── */
+        [data-ea-publisher] { min-height: 72px; }
         [data-ea-publisher].loaded .ea-content, [data-ea-type].loaded .ea-content {
-            margin-left: 0!important;
-            margin-right: 0!important;
-            box-shadow: none!important;
-            background: #eee!important;
-            border-radius: 0!important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            box-shadow: none !important;
+            background: #fafafa !important;
+            border-radius: 0 !important;
+        }
+        [data-ea-type="text"].loaded .ea-callout, .ea-type-text .ea-callout {
+            margin-right: 0 !important;
+            padding-right: 0 !important;
         }
 
-        [data-ea-type="text"].loaded .ea-callout, .ea-type-text .ea-callout{
-            margin-right: 0!important;
-            padding-right: 0!important;
+        /* ── Footer ─────────────────────────────────────────── */
+        footer {
+            background: var(--brand-gradient);
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.875rem;
         }
 
-        .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+        footer a {
+            color: var(--brand-accent);
+            text-decoration: underline;
+        }
+
+        footer img {
+            float: left;
+            margin-right: 8px;
+        }
+
+        /* ── GitHub corner ──────────────────────────────────── */
+        .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out }
+        @keyframes octocat-wave {
+            0%, 100% { transform: rotate(0) }
+            20%, 60%  { transform: rotate(-25deg) }
+            40%, 80%  { transform: rotate(10deg) }
+        }
+        @media (max-width: 500px) {
+            .github-corner:hover .octo-arm { animation: none }
+            .github-corner .octo-arm { animation: octocat-wave 560ms ease-in-out }
+        }
     </style>
 </head>
 <body class="d-flex flex-column h-100">
+
+    <header class="app-header">
+        <a href="https://github.com/Swimburger/NCrontabTester" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill: rgba(0,0,0,0.35); color: #fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+        <div class="container">
+            <h1>NCrontab Expression Tester</h1>
+            <p>
+                Test your NCrontab/CRON expressions and preview upcoming occurrences.
+                NCrontab supports a six-part format with seconds — used by
+                <a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=csharp#ncrontab-expressions">Azure Functions</a> and
+                <a href="https://docs.microsoft.com/en-us/azure/app-service/webjobs-create#ncrontab-expressions">Azure WebJobs</a>.
+                Learn more at <a href="https://github.com/atifaziz/NCrontab">the NCrontab GitHub repo</a>
+                or <a href="https://swimburger.net/blog/dotnet/introducing-ncrontab-tester-blazor-webassembly">my blog</a>.
+            </p>
+        </div>
+    </header>
+
     <main role="main" class="flex-shrink-0">
         <div class="container">
-            <a href="https://github.com/Swimburger/NCrontabTester" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
-            <h1 class="display-4">NCrontab Expression Tester</h1>
-            <p>
-                NCrontab is a .NET library providing crontab parsing, crontab formatting and the DateTime calculation of occurrences based on a crontab expression.
-                The library supports a six-part format that allows for seconds. Learn more about NCrontab and how to write NCrontab expressions at <a href="https://github.com/atifaziz/NCrontab">the NCrontab GitHub repository</a>.
-                Learn more about <a href="https://swimburger.net/blog/dotnet/introducing-ncrontab-tester-blazor-webassembly">how and why this tool was created at my blog</a>.
-            </p>
-            <p>
-                Use the tool below to test out your NCrontab/CRON expression and see the DateTimes of your occurrences.
-            </p>
-            <div class="alert alert-primary" role="alert">
-                Services such as
-                <a class="alert-link" href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=csharp#ncrontab-expressions">Timer Triggered Azure Functions</a> and
-                <a class="alert-link" href="https://docs.microsoft.com/en-us/azure/app-service/webjobs-create#ncrontab-expressions">scheduled Azure WebJobs</a> use NCrontab and require the six-part format.
+            <div class="tool-card">
+                <div id="app">Loading NCrontab Expression Evaluator...</div>
             </div>
-            <div id="app">Loading NCrontab Expression Evaluator...</div>
             <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
             <div data-ea-publisher="swimburger-net" data-ea-type="text"></div>
         </div>
