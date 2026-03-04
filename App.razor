@@ -69,14 +69,15 @@
         SetExpression();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override Task OnAfterRenderAsync(bool firstRender)
     {
         if (pendingScrollToIndex.HasValue)
         {
             var index = pendingScrollToIndex.Value;
             pendingScrollToIndex = null;
-            await JSRuntime.InvokeVoidAsync("scrollToOccurrence", index);
+            ((IJSInProcessRuntime)JSRuntime).InvokeVoid("scrollToOccurrence", index);
         }
+        return Task.CompletedTask;
     }
 
     private void PrintOccurrences()
@@ -127,7 +128,7 @@
         var uriToCopy = $"{uri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.UriEscaped)}?expression={readableCron}";
         await JSRuntime.InvokeVoidAsync("copyText", uriToCopy);
         copied = true;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
         await Task.Delay(2000);
         copied = false;
     }
