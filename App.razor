@@ -12,16 +12,14 @@
            placeholder="Cron Expression"
            class="form-control"
            id="crontab-expression" />
-    <div class="input-group-append">
-        <button 
-            @onclick="PrintOccurrences" 
-            type="button" 
-            class="btn btn-primary" 
-            disabled="@(!isExpressionValid)">
-            Print More
-        </button>
-        <button @onclick="CopyLink" type="button" class="btn btn-light">Copy Link</button>
-    </div>
+    <button
+        @onclick="PrintOccurrences"
+        type="button"
+        class="btn btn-primary"
+        disabled="@(!isExpressionValid)">
+        Print More
+    </button>
+    <button @onclick="CopyLink" type="button" class="btn @(copied ? "btn-success" : "btn-light")">@(copied ? "Copied!" : "Copy Link")</button>
 </div>
 <label>Occurrences Output:</label>
 @if (!string.IsNullOrEmpty(errorMessage))
@@ -41,7 +39,8 @@
     @foreach (var occurence in occurrences)
     {
         <li>
-            @occurence.ToString("yyyy-MM-dd HH:mm:ss")
+            <span>@occurence.ToString("yyyy-MM-dd HH:mm:ss")</span>
+            <span class="occurrence-relative">@ToRelativeTime(occurence)</span>
         </li>
     }
 </ul>
@@ -53,35 +52,40 @@
     private CrontabSchedule cronSchedule = CrontabSchedule.Parse(DefaultCronExpression, new CrontabSchedule.ParseOptions { IncludingSeconds = true });
     private List<DateTime> occurrences = new List<DateTime>();
     private string errorMessage = string.Empty;
-    private List<Action> actionsToRunAfterRender = new List<Action>();
     private bool isExpression6PartFormat = true;
     private bool isExpressionValid = true;
+    private int? pendingScrollToIndex;
+    private bool copied;
 
-    protected override Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         var uri = new Uri(NavigationManager.Uri);
         var queryPairs = QueryHelpers.ParseQuery(uri.Query);
         if (queryPairs.ContainsKey("expression"))
         {
-            cronExpression = ReadableQueryToCron(queryPairs["expression"].First());
+            cronExpression = ReadableQueryToCron(queryPairs["expression"].First()!);
         }
 
         SetExpression();
-
-        return Task.CompletedTask;
     }
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        foreach (var actionToRun in actionsToRunAfterRender)
+        if (pendingScrollToIndex.HasValue)
         {
-            actionToRun();
+            var index = pendingScrollToIndex.Value;
+            pendingScrollToIndex = null;
+            await JSRuntime.InvokeVoidAsync("scrollToOccurrence", index);
         }
-        actionsToRunAfterRender.Clear();
-        return base.OnAfterRenderAsync(firstRender);
     }
 
     private void PrintOccurrences()
+    {
+        AppendOccurrences();
+        pendingScrollToIndex = occurrences.Count - 1;
+    }
+
+    private void AppendOccurrences()
     {
         var mostRecentDate = occurrences.Count == 0 ? startDate : occurrences.Last();
         for (int i = 0; i < 10; i++)
@@ -89,8 +93,6 @@
             mostRecentDate = cronSchedule.GetNextOccurrence(mostRecentDate);
             occurrences.Add(mostRecentDate);
         }
-
-        actionsToRunAfterRender.Add(() => JSRuntime.InvokeVoidAsync("scrollToOccurrence", occurrences.Count - 1));
     }
 
     private void SetExpression()
@@ -107,7 +109,7 @@
             cronSchedule = CrontabSchedule.Parse(cronExpression, new CrontabSchedule.ParseOptions { IncludingSeconds = isExpression6PartFormat });
             errorMessage = string.Empty;
             isExpressionValid = true;
-            PrintOccurrences();
+            AppendOccurrences();
         }
         catch (CrontabException exception)
         {
@@ -118,12 +120,33 @@
         }
     }
 
-    private void CopyLink()
+    private async Task CopyLink()
     {
         var uri = new Uri(NavigationManager.Uri);
         var readableCron = CronToReadableQuery(cronExpression);
         var uriToCopy = $"{uri.GetComponents(UriComponents.SchemeAndServer | UriComponents.Path, UriFormat.UriEscaped)}?expression={readableCron}";
-        JSRuntime.InvokeVoidAsync("copyText", uriToCopy);
+        await JSRuntime.InvokeVoidAsync("copyText", uriToCopy);
+        copied = true;
+        StateHasChanged();
+        await Task.Delay(2000);
+        copied = false;
+    }
+
+    private static string ToRelativeTime(DateTime dateTime)
+    {
+        var diff = dateTime - DateTime.Now;
+        var abs = diff.Duration();
+        bool future = diff > TimeSpan.Zero;
+
+        (int value, string unit) = abs.TotalSeconds < 60  ? ((int)abs.TotalSeconds, "second")
+            : abs.TotalMinutes < 60                        ? ((int)abs.TotalMinutes, "minute")
+            : abs.TotalHours < 24                          ? ((int)abs.TotalHours,   "hour")
+            : abs.TotalDays < 30                           ? ((int)abs.TotalDays,    "day")
+            : abs.TotalDays < 365                          ? ((int)(abs.TotalDays / 30),  "month")
+            :                                                ((int)(abs.TotalDays / 365), "year");
+
+        string label = value == 1 ? unit : unit + "s";
+        return future ? $"in {value} {label}" : $"{value} {label} ago";
     }
 
     private string CronToReadableQuery(string query) => query.Replace(' ', '+');
