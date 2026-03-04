@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --brand-darkest: #4a0636;
+    --brand-dark: #6c0a51;
+    --brand-mid: #a02c56;
+    --brand-accent: #ffc966;
+  }
+
+  /* Full page uses brand gradient so any overflow outside 1200×630 looks intentional */
+  html {
+    background: linear-gradient(135deg, var(--brand-darkest) 0%, var(--brand-dark) 50%, var(--brand-mid) 100%);
+  }
+
+  body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--brand-darkest) 0%, var(--brand-dark) 50%, var(--brand-mid) 100%);
+    color: #fff;
+    padding: 26px 48px 22px;
+    flex-shrink: 0;
+  }
+
+  header h1 {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 7px;
+  }
+
+  header p {
+    color: rgba(255,255,255,0.88);
+    font-size: 13.5px;
+    line-height: 1.5;
+    max-width: 680px;
+  }
+
+  header a { color: var(--brand-accent); }
+
+  main {
+    padding: 16px 48px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 22px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.05);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .field-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6b7280;
+    margin-bottom: 6px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .input-box {
+    flex: 1;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 14.5px;
+    font-family: 'Cascadia Code', ui-monospace, Consolas, monospace;
+    color: #212529;
+    background: #fff;
+  }
+
+  .btn-primary {
+    background: var(--brand-mid);
+    border: 1px solid var(--brand-mid);
+    color: #fff;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .btn-outline {
+    border: 1px solid var(--brand-mid);
+    color: var(--brand-mid);
+    background: #fff;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .occurrences-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge {
+    background: var(--brand-mid);
+    color: #fff;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+  }
+
+  .terminal {
+    background: #0d1117;
+    border-radius: 8px;
+    font-family: 'Cascadia Code', ui-monospace, 'JetBrains Mono', Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #e6edf3;
+    padding: 8px 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 18px;
+  }
+
+  .soon  { color: var(--brand-accent); }
+  .later { color: #7d8590; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>NCrontab Expression Tester</h1>
+  <p>Test your NCrontab/CRON expressions and preview upcoming occurrences. NCrontab supports a
+  six-part format with seconds — used by <a href="#">Azure Functions</a> and <a href="#">Azure WebJobs</a>.</p>
+</header>
+
+<main>
+  <div class="card">
+    <div>
+      <div class="field-label">NCrontab Expression</div>
+      <div class="input-row">
+        <div class="input-box">0 0 12 * */2 Mon</div>
+        <div class="btn-primary">Print More</div>
+        <div class="btn-outline">Copy Link</div>
+      </div>
+    </div>
+
+    <div class="occurrences-header">
+      <div class="field-label" style="margin-bottom:0">Occurrences</div>
+      <div class="badge">10</div>
+    </div>
+
+    <div class="terminal">
+      <div class="row"><span>2026-03-09 12:00:00</span><span class="soon">in 5 days</span></div>
+      <div class="row"><span>2026-03-16 12:00:00</span><span class="later">in 12 days</span></div>
+      <div class="row"><span>2026-03-23 12:00:00</span><span class="later">in 19 days</span></div>
+      <div class="row"><span>2026-03-30 12:00:00</span><span class="later">in 26 days</span></div>
+      <div class="row"><span>2026-05-04 12:00:00</span><span class="later">in 2 months</span></div>
+      <div class="row"><span>2026-05-11 12:00:00</span><span class="later">in 2 months</span></div>
+      <div class="row"><span>2026-05-18 12:00:00</span><span class="later">in 2 months</span></div>
+      <div class="row"><span>2026-05-25 12:00:00</span><span class="later">in 2 months</span></div>
+      <div class="row"><span>2026-07-06 12:00:00</span><span class="later">in 4 months</span></div>
+      <div class="row"><span>2026-07-13 12:00:00</span><span class="later">in 4 months</span></div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
