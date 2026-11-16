@@ -7,7 +7,7 @@ Learn more about the NCrontab library at https://github.com/atifaziz/NCrontab.
 
 ## Requirements
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [.NET 11 SDK](https://dotnet.microsoft.com/download/dotnet/11.0)
 - [Node.js 24](https://nodejs.org/)
 
 ## Run locally

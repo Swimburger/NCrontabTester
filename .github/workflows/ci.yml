@@ -65,7 +65,7 @@ jobs:
           CI: true
 
       - name: Audit NuGet dependencies
-        run: dotnet list package --vulnerable --include-transitive
+        run: dotnet package list --vulnerable --include-transitive
 
       - name: Audit npm dependencies
         run: npm audit
