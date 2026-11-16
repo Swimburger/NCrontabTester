@@ -1,0 +1,26 @@
+{
+  "name": "ncrontab-tester",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "npm@11.21.2",
+  "scripts": {
+    "build": "dotnet publish NCrontabTester.csproj --configuration Release --output dist --disable-build-servers -p:UseSharedCompilation=false",
+    "build:cloudflare": "npm run build && cf build",
+    "build:cloudflare:prebuilt": "cf build",
+    "deploy": "npm run build:cloudflare && cf deploy --prebuilt",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "cf": "1.0.0-beta.32",
+    "wrangler": "4.162.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "fsevents@2.3.3": true,
+    "workerd@1.20261113.1": true
+  }
+}

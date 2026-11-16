@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  DOTNET_NOLOGO: '1'
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+
+jobs:
+  test:
+    runs-on: ubuntu-26.04
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+          workloads: wasm-tools
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Setup npm
+        run: npm install --global npm@11.21.2
+
+      - name: Install Cloudflare dependencies
+        run: npm ci
+
+      - name: Clean
+        run: dotnet clean --configuration Release
+
+      - name: Restore .NET dependencies
+        run: dotnet restore
+
+      - name: Build Release
+        run: dotnet build --configuration Release --no-restore --disable-build-servers -p:UseSharedCompilation=false
+
+      - name: Publish optimized Release
+        run: npm run build -- --no-restore
+
+      - name: Build Cloudflare project
+        run: npm run build:cloudflare:prebuilt
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run published app tests
+        run: npm run test:e2e
+        env:
+          CI: true
+
+      - name: Audit NuGet dependencies
+        run: dotnet list package --vulnerable --include-transitive
+
+      - name: Audit npm dependencies
+        run: npm audit
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: error
+          retention-days: 7
