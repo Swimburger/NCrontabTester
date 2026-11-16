@@ -9,6 +9,7 @@ Learn more about the NCrontab library at https://github.com/atifaziz/NCrontab.
 
 - [.NET 11 SDK](https://dotnet.microsoft.com/download/dotnet/11.0)
 - [Node.js 24](https://nodejs.org/)
+- [pnpm 12](https://pnpm.io/installation)
 
 ## Run locally
 
@@ -19,8 +20,8 @@ dotnet run
 ## Build for Cloudflare
 
 ```bash
-npm ci
-npm run build:cloudflare
+pnpm install --frozen-lockfile
+pnpm run build:cloudflare
 ```
 
 The Cloudflare project serves the published Blazor WebAssembly output with
@@ -28,5 +29,5 @@ Workers Static Assets and SPA fallback routing. Production deployment is an
 explicit separate step:
 
 ```bash
-npm run deploy
+pnpm run deploy
 ```

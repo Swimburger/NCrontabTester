@@ -1,0 +1,4 @@
+allowBuilds:
+  esbuild: true
+  fsevents: true
+  workerd: true
