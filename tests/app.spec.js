@@ -24,6 +24,17 @@ test("evaluates valid and invalid cron expressions", async ({ page }) => {
   await expect(occurrences).toHaveCount(20);
 });
 
+test("keeps the advertisement below the tool", async ({ page }) => {
+  const ad = page.locator(".ethical-ad-slot");
+
+  await expect(ad).toHaveCount(1);
+  expect(await page.evaluate(() => {
+    const toolElement = document.querySelector(".tool-card");
+    const adElement = document.querySelector(".ethical-ad-slot");
+    return Boolean(toolElement.compareDocumentPosition(adElement) & Node.DOCUMENT_POSITION_FOLLOWING);
+  })).toBe(true);
+});
+
 test("copies a shareable link and reports success", async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "clipboard", {
