@@ -24,6 +24,24 @@ test("evaluates valid and invalid cron expressions", async ({ page }) => {
   await expect(occurrences).toHaveCount(20);
 });
 
+test("supports zoom, dark mode, and a narrow viewport without Google Analytics", async ({ page, request }) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
+  await page.reload();
+  await expect(page.locator("#crontab-expression")).toBeVisible();
+
+  const viewport = await page.locator('meta[name="viewport"]').getAttribute("content");
+  expect(viewport).not.toContain("user-scalable=no");
+  expect(viewport).not.toContain("maximum-scale");
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme)).toBe("light dark");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).not.toBe("rgb(250, 250, 250)");
+
+  const document = await (await request.get("/")).text();
+  expect(document).not.toContain("googletagmanager.com");
+  expect(document).not.toContain("google-analytics.com");
+});
+
 test("serves the app with Cloudflare routing and headers", async ({ page, request }) => {
   const root = await request.get("/");
   expect(root.status()).toBe(200);
