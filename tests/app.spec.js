@@ -13,15 +13,58 @@ test("evaluates valid and invalid cron expressions", async ({ page }) => {
   await expect(occurrences).toHaveCount(10);
 
   await input.fill("not a cron");
-  await expect(page.getByRole("alert")).toContainText("invalid crontab expression");
+  await expect(page.locator(".tool-card").getByRole("alert")).toContainText("invalid crontab expression");
   await expect(printMore).toBeDisabled();
 
   await input.fill("0 12 * * Mon");
-  await expect(page.getByRole("alert")).toContainText("classic five-part CRON format");
+  await expect(page.locator(".tool-card").getByRole("alert")).toContainText("classic five-part CRON format");
   await expect(occurrences).toHaveCount(10);
 
   await printMore.click();
   await expect(occurrences).toHaveCount(20);
+});
+
+test("copies a shareable link and reports success", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async (text) => {
+          window.copiedLink = text;
+        },
+      },
+    });
+  });
+  await page.reload();
+  await expect(page.locator("#crontab-expression")).toBeVisible();
+
+  await page.getByRole("button", { name: "Copy Link" }).click();
+
+  await expect(page.getByRole("status")).toHaveText("Link copied");
+  const copiedLink = await page.evaluate(() => window.copiedLink);
+  expect(copiedLink).toContain("?expression=0+0+12+*+*/2+Mon");
+});
+
+test("reports a clipboard failure without disabling retry", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async () => {
+          throw new DOMException("Clipboard access denied", "NotAllowedError");
+        },
+      },
+    });
+    document.execCommand = () => false;
+  });
+  await page.reload();
+  await expect(page.locator("#crontab-expression")).toBeVisible();
+
+  const copyButton = page.getByRole("button", { name: "Copy Link" });
+  await copyButton.click();
+
+  await expect(page.getByRole("status")).toHaveText("Copy failed");
+  await expect(copyButton).toBeEnabled();
 });
 
 test("supports zoom, dark mode, and a narrow viewport without Google Analytics", async ({ page, request }) => {
