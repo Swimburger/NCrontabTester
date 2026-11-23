@@ -28,6 +28,8 @@ test("keeps the advertisement below the tool", async ({ page }) => {
   const ad = page.locator(".ethical-ad-slot");
 
   await expect(ad).toHaveCount(1);
+  await expect(ad.locator("[data-ea-publisher]")).toHaveClass(/\badaptive\b/);
+  await expect(ad.locator("[data-ea-publisher]")).toHaveClass(/\braised\b/);
   expect(await page.evaluate(() => {
     const toolElement = document.querySelector(".tool-card");
     const adElement = document.querySelector(".ethical-ad-slot");

@@ -61,7 +61,6 @@
             --color-focus: #6c0a51;
             --color-terminal: #0d1117;
             --color-terminal-text: #e6edf3;
-            --color-ad-surface: #fafafa;
         }
 
         body {
@@ -238,9 +237,7 @@
         [data-ea-publisher].loaded .ea-content, [data-ea-type].loaded .ea-content {
             margin-left: 0 !important;
             margin-right: 0 !important;
-            box-shadow: none !important;
-            background: var(--color-ad-surface) !important;
-            border-radius: 0 !important;
+            border: 1px solid var(--color-border) !important;
         }
         [data-ea-type="text"].loaded .ea-callout, .ea-type-text .ea-callout {
             margin-right: 0 !important;
@@ -315,7 +312,6 @@
                 --color-text-muted: #c7bec7;
                 --color-border: #8c828e;
                 --color-focus: #ff91c8;
-                --color-ad-surface: #2d2731;
                 --bs-body-color: #f5f2f5;
                 --bs-body-bg: #17141a;
                 --bs-secondary-color: rgba(245, 242, 245, 0.75);
@@ -349,6 +345,10 @@
             .tool-card {
                 border: 1px solid CanvasText;
             }
+
+            .ethical-ad-slot [data-ea-publisher].loaded .ea-content {
+                border: 1px solid CanvasText;
+            }
         }
     </style>
 </head>
@@ -376,7 +376,7 @@
             </div>
             <aside class="ethical-ad-slot" aria-label="Advertisement">
                 <div id="ncrontab-bottom"
-                     class="adaptive"
+                     class="adaptive raised"
                      data-ea-publisher="swimburger-net"
                      data-ea-type="text"
                      data-ea-keywords="dotnet|blazor|cron|azure-functions|webjobs"></div>
