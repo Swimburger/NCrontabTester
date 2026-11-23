@@ -24,17 +24,9 @@ test("evaluates valid and invalid cron expressions", async ({ page }) => {
   await expect(occurrences).toHaveCount(20);
 });
 
-test("keeps the advertisement below the tool", async ({ page }) => {
-  const ad = page.locator(".ethical-ad-slot");
-
-  await expect(ad).toHaveCount(1);
-  await expect(ad.locator("[data-ea-publisher]")).toHaveClass(/\badaptive\b/);
-  await expect(ad.locator("[data-ea-publisher]")).toHaveClass(/\braised\b/);
-  expect(await page.evaluate(() => {
-    const toolElement = document.querySelector(".tool-card");
-    const adElement = document.querySelector(".ethical-ad-slot");
-    return Boolean(toolElement.compareDocumentPosition(adElement) & Node.DOCUMENT_POSITION_FOLLOWING);
-  })).toBe(true);
+test("does not load advertising", async ({ page }) => {
+  await expect(page.locator("[data-ea-publisher]")).toHaveCount(0);
+  await expect(page.locator('script[src*="ethicalads"]')).toHaveCount(0);
 });
 
 test("copies a shareable link and reports success", async ({ page }) => {
