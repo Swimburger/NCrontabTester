@@ -5,6 +5,13 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator("#crontab-expression")).toBeVisible();
 });
 
+test("publishes complete metadata without external presentation assets", async ({ page }) => {
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://ncrontab.swimburger.net/");
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", "https://ncrontab.swimburger.net/SocialImage.png");
+  await expect(page.locator('link[href*="cdn.jsdelivr.net"], script[src*="cdn.jsdelivr.net"]')).toHaveCount(0);
+  await expect(page.locator('img[src^="https://swimburger.net/content"], link[href^="https://swimburger.net/content"]')).toHaveCount(0);
+});
+
 test("evaluates valid and invalid cron expressions", async ({ page }) => {
   const input = page.locator("#crontab-expression");
   const occurrences = page.locator(".occurrences-list li");
@@ -96,6 +103,18 @@ test("serves the app with Cloudflare routing and headers", async ({ page, reques
   expect(root.headers()["cache-control"]).toContain("must-revalidate");
   expect(root.headers()["x-content-type-options"]).toBe("nosniff");
   expect(root.headers()["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+  expect(root.headers()["content-security-policy"]).toBe("base-uri 'self'; object-src 'none'; frame-ancestors 'none'");
+  expect(root.headers()["permissions-policy"]).toContain("camera=()");
+  expect(root.headers()["x-frame-options"]).toBe("DENY");
+
+  const robots = await request.get("/robots.txt");
+  expect(robots.status()).toBe(200);
+  expect(robots.headers()["content-type"]).toContain("text/plain");
+  expect(await robots.text()).toBe("User-agent: *\nAllow: /\n");
+
+  const socialImage = await request.get("/SocialImage.png");
+  expect(socialImage.status()).toBe(200);
+  expect(socialImage.headers()["content-type"]).toContain("image/png");
 
   const deepLink = await request.get("/deep/link", {
     headers: { Accept: "text/html" },
