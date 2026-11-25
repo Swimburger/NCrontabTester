@@ -7,7 +7,7 @@
   },
   "packageManager": "pnpm@12.21.0",
   "scripts": {
-    "build": "dotnet publish NCrontabTester.csproj --configuration Release --output dist --disable-build-servers -p:UseSharedCompilation=false",
+    "build": "./build.sh",
     "build:cloudflare": "pnpm run build && cf build",
     "build:cloudflare:prebuilt": "cf build",
     "deploy": "pnpm run build:cloudflare && cf deploy --prebuilt",

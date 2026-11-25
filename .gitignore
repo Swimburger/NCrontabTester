@@ -367,3 +367,12 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Local SDK and Cloudflare build output
+.dotnet/
+.dotnet-install.sh
+.cloudflare/
+dist/
+node_modules/
+playwright-report/
+test-results/
